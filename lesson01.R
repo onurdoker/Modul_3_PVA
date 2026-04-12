@@ -314,4 +314,114 @@ popular_dest <- flights %>%
 View(popular_dest)
 View(filter(airports, faa == 'ORD' | faa == 'ATL'))
 
+''
+'
+** DATA TYPES IN DATA ANALYSIS  **
+
+In data analysis, three different types of datasets are commonly used:
+  - Cross-sectional
+  - Time series
+  - Panel data
+Cross-sectional data: At specific times, data that consists of horizontal sections from different units (which can be individuals, houses, firms, cities, states, or countries) is used.
+
+Time series data: It consists of observations made a different time points on a single unit (which can be an induvidual, house, firm, city, state, or country) related to one or more variables. Time series data is used for forecasting.
+
+Panel data: It consists of observations made on different units over time (which can be individuals, houses, firms, cities, states, or countries) related to one or more variables.
+
+
+** REGRESSION ANALYSIS **
+
+Regression analysis is a statistical method used to examine the relationship between two or more variables. It helps in understanding how changes in one variable are associated with changes in another variable.
+
+In regression analysis, there are three main types of models:
+   - Linear Regression: A model that assumes a linear relationship between the dependent and independent variables.
+  - Logistic Regression: A model that is used to predict binary outcomes (e.g., yes/no, 0/1) based on one or more independent variables
+  - Multiple Linear Regression: A model that assumes a linear relationship between the dependent variable and multiple independent variables
+
+
+Less Square Method:
+  A method used to find the best-fitting line to a set of data points by minimizing the sum of squared differences between the observed values and the predicted values.
+
+lin-lin model:
+  It is a model in which both the dependent variable and independent variables are continuous numerical variables. In this model, the relationship between the dependent and independent variables can be described by a straight line equation of the form y = mx + b. Here, m is the slope of the line and b is the y-intercept. The goal of linear regression is to find the values of m and b that minimize the sum of squared differences between the observed values and the predicted values. This can be achieved using techniques such as least squares method.
+
+lin-log model:
+  It is a model in which the dependent variable is continuous numerical variable while the independent variables are categorical or binary variables. In this model, the relationship between the dependent and independent variables can be described by a logistic function of the form P(y=1 | x) = exp(b0 + b1 x1 + ... + bn xn) / (1 + exp(b0 + b1 x1 + ... + bn xn)). Here, P(y= 1 | x) is the probability of y being 1 given the values of x. The goal of logistic regression is to find the values of b that maximize the likelihood of observing the data. This can be achieved using techniques such as maximum likelihood method.
+
+log-log model:
+  It is a model in which both the dependent variable and independent variables are continuous numerical variables, and the relationship between them can be described by a logarithmic function of the form P(y=1 | x) = exp(b0 + b 1 log(x1) + ... + bn log xn)) / (1 + exp(b0 + b 1 log(x1) + ... + bn log xn)). Here, P(y=1 | x = 1 | x) is the probability of y being 1 given the values of x. The goal of log-log regression is to find the values of b that maximize the likelihood of observing the data under the assumption that it follows a logistic distribution with the specified form.
+
+In summary, log-log regression is a statistical method used to model the relationship between two continuous variables by taking their logarithms and fitting a linear model to the transformed data. It is particularly useful when the relationship between the variables is not linear but can be described by a power law or exponential function.
+'
+''
+
+# Example of lin-lin model:
+# Load necessary packages and libraries
+install.packages('wooldridge')
+library(wooldridge)
+
+# Load the data set
+ceosal1 <- ceosal1
+View(ceosal1)
+
+# Fit a linear regression model to the data
+lm(
+  salary ~ roe,
+  data = ceosal1
+) #Intercept: 963.2 roe: 18.5
+
+res_ceosal1 <- lm(
+  salary ~ roe,
+  data = ceosal1
+)
+summary(res_ceosal1) # View the summary of the model
+
+# Plotting the data points
+plot(
+  ceosal1$roe,
+  ceosal1$salary,
+  xlab = 'Return on equity',
+  ylab = 'CEO salary',
+  ylim = c(0, 4000)
+)
+
+# Plot the regression line
+abline(
+  res_ceosal1,
+  col = 'red'
+)
+
+# Another example of lin-lin model:
+
+# Load the data set
+wage1 <- wage1
+View(wage1)
+
+# # Fit a linear regression model to the data
+lm(
+  wage ~ educ,
+  data = wage1
+) #Intercept: -0.9049 educ: 0.5414
+
+res_wage1 <- lm(
+  wage ~ educ,
+  data = wage1
+)
+summary(res_wage1)
+
+# Plotting the data points
+plot(
+  wage1$educ,
+  wage1$wage1,
+  xlab = 'Education',
+  ylab = 'Wage'
+)
+
+# Plot the regression line
+abline(
+  res_wage1,
+  col = 'red'
+)
+
+
 save.image(file = "lesson01.RData")
