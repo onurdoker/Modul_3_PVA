@@ -59,7 +59,7 @@ results <- svyglm(
   family = 'quasibinomial'
 )
 
-# We calculate the odds ratio by exponentiating the obtained values.
+# The exponential values of the obtained results are calculated to compute the odds ratios.
 result_tidy <- tidy(
   results,
   exponentiate = TRUE
@@ -67,13 +67,13 @@ result_tidy <- tidy(
 View(result_tidy)
 
 
-# We are exporting the results to an Excel file.
+# Exporting the results to an Excel file.
 write_xlsx(
   result_tidy,
   'results1.xlsx'
 )
 
-# Creating regression table using the gtsummary package.
+# Using the gtsummary package to create a regression table.
 tbl_regression(
   results
 )
@@ -287,4 +287,4 @@ print(
 )
 
 
-save.image(file='lesson06.RData')
+save.image(file = 'lesson06.RData')
