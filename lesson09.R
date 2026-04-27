@@ -128,4 +128,155 @@ x <- merge(
   all.x = TRUE,
 )
 
-# to be continued...
+# When analyzing loneliness data, identify individuals who reported lonely with a '1' both in 2020 and 2022 datasets, and then group those who consistenly answered '1' in both periods.
+#After indentifying the consistent respondents, sort this variables from smallest to largest. Finally, create a new veriable categorizing individuals who reported loneliness in both periods as 'Lone' and those who did not as 'Not Lone'.
+# Then, this expression is assigned to the 'lonely_panel' variable.
+x$lonely <- ifelse(
+  x$'Q11-CESD~000007' %in%
+    c(
+      1,
+      2,
+      3
+    ),
+  1,
+  x$'Q11-CESD~000007'
+)
+x <- x %>%
+  group_by(CASEID_1979) %>%
+  arrange(CASEID_1979, wave) %>%
+  mutate(
+    lonely_panel = ifelse(
+      lonely == 1 & lag(lonely) == 1,
+      1,
+      0
+    )
+  ) %>%
+  ungroup()
+
+# Follow a similar process for the depression variable: identify individuals who reported depression on both periods and assign them to a new categorical veriable 'depression_panel'.
+
+x$depression <- ifelse(
+  x$'Q11-CESD~000004' %in%
+    c(
+      1,
+      2,
+      3
+    ),
+  1,
+  x$'Q11-CESD~000004'
+)
+x <- x %>%
+  group_by(CASEID_1979) %>%
+  arrange(CASEID_1979, wave) %>%
+  mutate(
+    depression_panel = ifelse(
+      depression == 1 & lag(depression) == 1,
+      1,
+      0
+    )
+  ) %>%
+  ungroup()
+
+# Age variable
+x$age <- x$AGEATINT
+
+# Family Income variable:
+summary(x$TNFI_TRUNC)
+#  Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's
+#     0   27568   65000   96564  120000  803437   14587
+
+# Upon initial examination of TNFI_TRUCK values, the values are extremely large. Therefore, to normalize them, we will take its logarithm. However, since the minimum value of the variable is 0, we add 1 to avoid taking the logarithm of zero.
+x$family_income <- log(
+  x$TNFI_TRUNC + 1,
+  base = 10
+)
+
+# Female variable
+x$female <- ifelse(
+  x$SAMPLE_SEX_1979 == 1,
+  0,
+  x$SAMPLE_SEX_1979
+)
+x$female <- ifelse(
+  x$female == 2,
+  1,
+  x$female
+)
+
+# Married variable
+x$married <- ifelse(
+  x$`MARSTAT-KEY` %in%
+    c(
+      0,
+      2,
+      3,
+      6
+    ),
+  0,
+  x$`MARSTAT-KEY`
+)
+
+
+# Education variable
+x$education <- x$HGC_EVER_XRND
+
+
+# Region variable
+x$region <- x$REGION
+x$region <- ifelse(
+  x$region == 1,
+  'NORTHEAST',
+  x$region
+)
+x$region <- ifelse(
+  x$region == 2,
+  'NORTH CENTRAL',
+  x$region
+)
+x$region <- ifelse(
+  x$region == 3,
+  'SOUTH',
+  x$region
+)
+x$region <- ifelse(
+  x$region == 4,
+  'WEST',
+  x$region
+)
+
+# Family Size variable
+x$family_size <- x$FAMSIZE
+
+x$weight <- x$SAMPWEIGHT
+
+
+# REGRESSION
+results_lonely <- feglm(
+  fml = lonely_panel ~
+    depression_panel +
+    age +
+    family_income +
+    female +
+    married +
+    education +
+    family_size |
+    wave +
+      region,
+  data = x,
+  family = 'logit',
+  panel.id = c(
+    'CASEID_1979',
+    'wave'
+  ),
+  weights = x$weight,
+  cluster = ~CASEID_1979
+)
+
+# Results
+modelsummary(
+  results_lonely,
+  exponentiate = TRUE,
+  star = TRUE
+)
+
+save.image(file = 'lesson09.RData')
