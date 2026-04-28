@@ -307,5 +307,3 @@ modelsummary(
 )
 
 save.image(file = 'lesson10.RData')
-
-
