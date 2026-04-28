@@ -275,8 +275,57 @@ results_lonely <- feglm(
 # Results
 modelsummary(
   results_lonely,
-  exponentiate = TRUE,
-  star = TRUE
+  exponentiate = TRUE
 )
+
+modelsummary(
+  results_lonely,
+  exponentiate = TRUE,
+  stars = TRUE
+)
+
+# Ensure that variable names are consistently formatted
+modelsummary(
+  results_lonely,
+  exponentiate = TRUE,
+  stars = TRUE,
+  coef_map = c(
+    depression_panel = 'Depression dummy',
+    age = 'Age',
+    family_income = 'Family income',
+    female = 'Female',
+    married = 'Married',
+    family_size = 'Family size'
+  )
+)
+
+# Save the results in a Word document
+tbl_results_lonely1 <- modelsummary(
+  results_lonely,
+  exponentiate = TRUE,
+  stars = TRUE,
+  coef_map = c(
+    depression_panel = 'Depression dummy',
+    age = 'Age',
+    family_income = 'Family income',
+    female = 'Female',
+    married = 'Married',
+    family_size = 'Family size'
+  ),
+  output = 'flextable'
+)
+
+tbl_results_lonely2 <- read_docx()
+
+tbl_results_lonely2 <- body_add_flextable(
+  tbl_results_lonely2,
+  tbl_results_lonely1
+)
+
+print(
+  tbl_results_lonely2,
+  target = 'regression_results_lonely2.docx'
+)
+
 
 save.image(file = 'lesson09.RData')
