@@ -306,4 +306,34 @@ modelsummary(
   stars = TRUE
 )
 
+tbl_results_lonely1 <- modelsummary(
+  results_lonely,
+  exponentiate = TRUE,
+  stars = TRUE,
+  coef_map = c(
+    depression_panel = 'Depression dummy',
+    age = 'Age',
+    l_r_personal_income = 'Personal income',
+    l_r_household_income = 'Household income',
+    female = 'Female',
+    married = 'Married',
+    education = 'Education',
+    hh_size = 'Household size'
+  ),
+  output = 'flextable'
+)
+
+# Save the results in a Word document
+tbl_results_lonely2 <- read_docx()
+
+tbl_results_lonely2 <- body_add_flextable(
+  tbl_results_lonely2,
+  tbl_results_lonely1
+)
+
+print(
+  tbl_results_lonely2,
+  target = 'regression_results_lonely_HRS.docx'
+)
+
 save.image(file = 'lesson10.RData')
